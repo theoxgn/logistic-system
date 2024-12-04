@@ -8,18 +8,6 @@ A real-time shipment tracking dashboard that integrates with Shipper's webhook s
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![PostgreSQL](https://img.shields.io/badge/postgresql-%3E%3D14.0-blue.svg)
 
-## ✨ Features
-
-- 🚚 Real-time tracking updates via Shipper webhooks
-- ⚡ Live notifications using Socket.io
-- 📊 Clean and responsive tracking dashboard
-- 🔐 Secure webhook authentication
-- 📱 Mobile-friendly design
-- 🛢️ PostgreSQL data persistence
-- 🔄 Auto-refresh and real-time sync
-- 📝 Detailed tracking history
-- 🔍 Advanced tracking search
-
 ## 🛠️ Tech Stack
 
 ### Backend
