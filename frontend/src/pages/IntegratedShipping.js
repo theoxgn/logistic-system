@@ -45,6 +45,14 @@ function IntegratedShipping() {
     }
   });    
 
+  const Card = ({ children, className = '' }) => {
+    return (
+      <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
+        {children}
+      </div>
+    );
+  };
+
   // Function to get valid coordinates from location
   const getValidCoordinates = (location) => {
     // Check coordinates from adm_level_cur first
@@ -328,6 +336,7 @@ function IntegratedShipping() {
     
     try {
       const response = await getOrderDetails(orderId);
+      console.log(response.data)
       setTrackingInfo(response.data);
     } catch (err) {
       setError(err.message);
@@ -373,6 +382,82 @@ function IntegratedShipping() {
     handleChange(e);
     debouncedLocationSearch(value, type);
   };
+
+  // Courier selection section
+  const CourierSection = () => (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Choose Courier</h2>
+      
+      <div className="space-y-3">
+        {shippingRates.map((rate) => (
+          <Card
+            key={`${rate.logistic?.name}-${rate.rate?.name}`}
+            className={`cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
+              selectedCourier?.id === rate.id 
+                ? 'border-2 border-blue-500 bg-blue-50' 
+                : 'border border-gray-200'
+            }`}
+          >
+            <div 
+              className="p-4 flex justify-between items-center"
+              onClick={() => {
+                setSelectedCourier(rate);
+                // Set success message when courier is selected
+                setSuccess(`Selected ${rate.logistic?.name} - ${rate.rate?.name}`);
+                // Clear success message after 3 seconds
+                setTimeout(() => setSuccess(''), 3000);
+              }}
+            >
+              <div className="flex items-center space-x-3">
+                {/* Selection indicator */}
+                <div className={`w-4 h-4 rounded-full border ${
+                  selectedCourier?.id === rate.id
+                    ? 'border-blue-500 bg-blue-500'
+                    : 'border-gray-300'
+                }`}>
+                  {selectedCourier?.id === rate.id && (
+                    <div className="w-2 h-2 m-0.5 rounded-full bg-white" />
+                  )}
+                </div>
+                
+                {/* Courier info */}
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    {rate.logistic?.name || 'Unknown Courier'}
+                  </h3>
+                  <p className="text-sm text-gray-600">{rate.rate?.name || 'Standard Service'}</p>
+                </div>
+              </div>
+              
+              <div className="text-right">
+                <p className="font-bold text-gray-900">
+                  {new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                  }).format(rate.final_price || 0)}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {rate.min_day || '1'}-{rate.max_day || '3'} days
+                </p>
+              </div>
+            </div>
+            
+          </Card>
+        ))}
+        <div className="flex justify-between">
+              <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
+              <Button onClick={createShippingOrder}>Create Order</Button>
+            </div>
+      </div>
+      
+      {/* Display message if no rates available */}
+      {shippingRates.length === 0 && (
+        <div className="text-center p-6 bg-gray-50 rounded-lg">
+          <p className="text-gray-600">No shipping rates available at the moment</p>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -647,7 +732,9 @@ function IntegratedShipping() {
         )}
 
         {/* Step 3: Choose Courier */}
-        {step === 3 && (
+
+        {step === 3 && <CourierSection />}
+        {/* {step === 3 && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Available Couriers</h2>
             <div className="space-y-4">
@@ -684,7 +771,7 @@ function IntegratedShipping() {
               <Button onClick={createShippingOrder}>Create Order</Button>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Step 4: Order Summary */}
         {step === 4 && (
@@ -730,15 +817,27 @@ function IntegratedShipping() {
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded">
                 <p className="font-medium">Current Status</p>
-                <p>{trackingInfo.status}</p>
+                {/* <p>{trackingInfo.status}</p> */}
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                    <p className="text-sm font-medium text-gray-500">Status</p>
+                    <p className="mt-1">{trackingInfo.tracking?.shipper_status?.name || '-'}</p>
+                    </div>
+                    <div>
+                    <p className="text-sm font-medium text-gray-500">Description</p>
+                    <p className="mt-1">{trackingInfo.tracking?.shipper_status?.description || '-'}</p>
+                    </div>
+                </div>
               </div>
               <div className="space-y-2">
-                {trackingInfo.history?.map((item, index) => (
+                {trackingInfo.trackings?.map((item, index) => (
                   <div key={index} className="border-l-2 border-blue-500 pl-4 py-2">
-                    <p className="font-medium">{item.status}</p>
-                    <p className="text-sm text-gray-600">{item.description}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(item.timestamp).toLocaleString()}
+                    <p className="font-medium">{item.shipper_status.name}</p>
+                    <p className="text-sm text-gray-600">{item.shipper_status.description}</p>
+                    <p className="mt-1">
+                        {trackingInfo.last_updated_date
+                        ? new Date(trackingInfo.last_updated_date).toLocaleString()
+                        : '-'}
                     </p>
                   </div>
                 ))}
@@ -747,7 +846,7 @@ function IntegratedShipping() {
           </div>
         </div>
       )}
-
+    <br></br>
       {/* Messages */}
       {error && (
         <Alert
