@@ -7,6 +7,8 @@ import OrderCreate from './pages/OrderCreate';
 import PickupManagement from './pages/PickupManagement';
 import LabelManagement from './pages/ShippingLabelPage';
 import OrderTracking from './pages/OrderTracking';
+import IntegratedShipping from './pages/IntegratedShipping';
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
               <Route path="/pickup" element={<PickupManagement />} />
               <Route path="/label" element={<LabelManagement />} />
               <Route path="/order-tracking" element={<OrderTracking />} />
+              <Route path="/integrated-shipping" element={<IntegratedShipping />} />
             </Routes>
           </div>
         </div>

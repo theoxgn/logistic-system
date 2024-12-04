@@ -9,7 +9,8 @@ function Navbar() {
     { name: 'Order', href: '/order' },
     { name: 'Pickup', href: '/pickup' },
     { name: 'Label', href: '/label' },
-    { name: 'Order Tracking', href: '/order-tracking' }
+    { name: 'Order Tracking', href: '/order-tracking' },
+    { name: 'Integrated Shipping', href: '/integrated-shipping' }
   ];
 
   return (
