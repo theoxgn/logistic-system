@@ -8,7 +8,8 @@ function Navbar() {
     { name: 'Shipping', href: '/shipping' },
     { name: 'Order', href: '/order' },
     { name: 'Pickup', href: '/pickup' },
-    { name: 'Label', href: '/label' }
+    { name: 'Label', href: '/label' },
+    { name: 'Order Tracking', href: '/order-tracking' }
   ];
 
   return (

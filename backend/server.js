@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const shipperRoutes = require('./src/routes/shipper.routes');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
